@@ -1,4 +1,4 @@
-[Region not supported](https://console.aws.amazon.com/apprunner/home?region=eu-central-1#
+[Region not supported](https://console.aws.amazon.com/apprunner/home?region=eu-central-1#)
 
 Let's go to Ireland!
 
@@ -9,7 +9,7 @@ Let's go to Ireland!
 - Cert Management
 
 [Same use case as every solution](https://eu-west-1.console.aws.amazon.com/apprunner/home?region=eu-west-1#/welcome)
-[Apparently a GitHub acc is needed? ]
+Apparently a GitHub acc is needed?
 
 Guide says you need [AdministratorAccess Policy](https://docs.aws.amazon.com/apprunner/latest/dg/setting-up.html)
 Other docs say you need [AWSAppRunnerFullAccess ](https://docs.aws.amazon.com/apprunner/latest/dg/security_iam_id-based-policy-examples.html)
