@@ -12,3 +12,7 @@
 # Logging
 - Download via Web UI per environment
 - Can be configured to stream logs to cloudwatch
+
+# TLS/Certs 
+- [No https by default/ only for custom domains](https://aws.amazon.com/premiumsupport/knowledge-center/elastic-beanstalk-https-configuration/)
+>If you purchased and configured a custom domain name for your Elastic Beanstalk environment, you can use HTTPS to allow users to connect to your website securely. If you don't own a domain name, you can still use HTTPS with a self-signed certificate for development and testing purposes.

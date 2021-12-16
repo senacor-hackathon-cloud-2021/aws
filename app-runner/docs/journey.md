@@ -17,3 +17,6 @@ Services can be seen [here](https://eu-west-1.console.aws.amazon.com/apprunner/h
 # Logging
 - Cloudwatch [log groups](https://eu-west-1.console.aws.amazon.com/cloudwatch/home?region=eu-west-1#logsV2:log-groups): one for app logs, one for service/infra logs
     - [Can be exported using S3 and a specific task](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3ExportTasks.html)
+
+# TLS/Certs 
+- Default a wildcard cert for \<region>.apprunner

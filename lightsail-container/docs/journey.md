@@ -11,3 +11,6 @@
 # Logging
 - Simple logging where application logs and infra logs are mixed either via webconsole or cli
 - Not found a native way to export them (e.g. to Cloudwatch)
+
+# TLS/Certs 
+- Default a wildcard cert for \<random_uuid>.\<region>.apprunner
