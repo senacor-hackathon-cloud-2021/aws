@@ -26,7 +26,11 @@ resource "aws_ecs_service" "hackathon_cloud_2021_1_0_0" {
     container_port = "8080"
   }
 
-  desired_count = 1
+  desired_count = 2
+
+  deployment_maximum_percent = 200
+  deployment_minimum_healthy_percent = 50
+
 }
 
 # We'll eventually want a place to put our logs.
@@ -40,17 +44,17 @@ resource "aws_cloudwatch_log_group" "hackathon_cloud_2021_1_0_0" {
 resource "aws_ecs_task_definition" "simple_rest_service" {
   family = "hackathon-cloud-2021-1-0-0"
 
-  container_definitions = <<EOF
+  container_definitions = jsonencode(
   [
     {
-      "name": "simple-rest-service",
-      "image": "ghcr.io/easimon/simple-rest-service:latest",
-      "portMappings": [
+      name: "simple-rest-service",
+      image: "ghcr.io/easimon/simple-rest-service:latest",
+      portMappings: [
         {
-          "containerPort": 8080
+          containerPort: 8080
         }
       ],
-      "logConfiguration": {
+      logConfiguration: {
         "logDriver": "awslogs",
         "options": {
           "awslogs-region": "eu-central-1",
@@ -58,7 +62,7 @@ resource "aws_ecs_task_definition" "simple_rest_service" {
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "healthCheck": {
+      healthCheck: {
         "command": [
           "CMD-SHELL",
           "curl -f http://localhost:8080/health || exit 1"
@@ -66,7 +70,7 @@ resource "aws_ecs_task_definition" "simple_rest_service" {
       }
     }
   ]
-  EOF
+  )
 
   execution_role_arn = aws_iam_role.task_execution_role.arn
 
@@ -74,7 +78,8 @@ resource "aws_ecs_task_definition" "simple_rest_service" {
   cpu = 256
   memory = 512
   requires_compatibilities = [
-    "FARGATE"]
+    "FARGATE"
+  ]
 
   # This is required for Fargate containers
   network_mode = "awsvpc"
@@ -188,8 +193,36 @@ resource "aws_alb_listener" "hackathon_cloud_2021_1_0_0_https" {
   protocol = "HTTPS"
   certificate_arn = aws_acm_certificate.hackathon_cloud_2021_1_0_0.arn
 
+
   default_action {
     type = "forward"
     target_group_arn = aws_lb_target_group.hackathon_cloud_2021_1_0_0.arn
   }
+}
+
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity = 4
+  min_capacity = 1
+  resource_id = "service/${aws_ecs_cluster.hackathon_cloud_2021_1_0_0.name}/${aws_ecs_service.hackathon_cloud_2021_1_0_0.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "ecs_policy" {
+  name = "scaling-on-load"
+  policy_type = "TargetTrackingScaling"
+  resource_id = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    target_value = 20
+    scale_in_cooldown = 60
+    scale_out_cooldown = 60
+
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+  }
+
 }
