@@ -20,3 +20,27 @@ Services can be seen [here](https://eu-west-1.console.aws.amazon.com/apprunner/h
 
 # TLS/Certs 
 - Default a wildcard cert for \<region>.apprunner
+
+# Custom Domain
+- [Possible after starting the application](https://docs.aws.amazon.com/apprunner/latest/dg/manage-custom-domains.html)
+- CNAME and certificate validation records are provided
+- Traceroute shows routing via decix2.amazon.com
+
+# Scalability
+
+```bash
+wrk -t24 -c500 -d3m https://spring.apprunner.prenoob.codes/persons
+Running 3m test @ https://spring.apprunner.prenoob.codes/persons
+  24 threads and 500 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   261.77ms  223.48ms   2.00s    83.64%
+    Req/Sec    78.32     50.59   323.00     68.61%
+  330398 requests in 3.00m, 282.77MB read
+  Socket errors: connect 0, read 0, write 0, timeout 198
+  Non-2xx or 3xx responses: 46
+Requests/sec:   1834.66
+Transfer/sec:      1.57MB
+```
+
+# VPC Magic and Connecting to other AWS services
+- [No private VPCs possible](https://docs.aws.amazon.com/apprunner/latest/dg/security-data-protection-vpce.html)
